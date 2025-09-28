@@ -1,0 +1,154 @@
+{
+  "metadata": {
+    "version": "2.0",
+    "description": "AI 智慧裝機顧問知識圖譜的標準資料結構。所有爬蟲應遵循此格式輸出，包含價格與擷取時間。",
+    "created_at": "2025-09-23T05:00:00Z"
+  },
+  "components": {
+    "cpu": [
+      {
+        "model_name": "AMD Ryzen 5 7600X",
+        "price": 6650,
+        "fetched_at": "2025-09-23T04:55:10Z",
+        "specifications": {
+          "socket": "AM5",
+          "microarchitecture": "Zen 4",
+          "core_count": 6,
+          "thread_count": 12,
+          "core_clock": "4.7 GHz",
+          "boost_clock": "5.3 GHz",
+          "l2_cache": "6 MB",
+          "l3_cache": "32 MB",
+          "tdp": 105,
+          "integrated_graphics": "Radeon Graphics",
+          "memory_support_type": "DDR5",
+          "pcie_version": "5.0",
+          "pcie_lanes": 28,
+          "includes_cooler": false
+        }
+      }
+    ],
+    "motherboard": [
+      {
+        "model_name": "ASUS TUF GAMING B650M-PLUS WIFI",
+        "price": 4990,
+        "fetched_at": "2025-09-23T04:55:12Z",
+        "specifications": {
+          "chipset": "AMD B650",
+          "socket": "AM5",
+          "form_factor": "Micro ATX",
+          "memory_type": "DDR5",
+          "memory_slots": 4,
+          "memory_max": "128 GB",
+          "pcie_x16_slots": "1 x PCIe 4.0 x16",
+          "m2_slots": "2 x PCIe 5.0 x4",
+          "sata_ports": 4,
+          "lan_speed": "2.5 Gbps",
+          "wifi": "Wi-Fi 6",
+          "rear_panel_usb": "1 x USB-C 3.2 Gen2, 2 x USB-A 3.2 Gen2, 5 x USB-A 2.0",
+          "front_panel_usb": "1 x USB-C 3.2 Gen1, 2 x USB-A 3.2 Gen1",
+          "video_outputs": "1 x HDMI, 1 x DisplayPort"
+        }
+      }
+    ],
+    "ram": [
+      {
+        "model_name": "Kingston FURY Beast 32GB (2x16GB) DDR5-6000 CL30",
+        "price": 3359,
+        "fetched_at": "2025-09-23T04:55:14Z",
+        "specifications": {
+          "type": "DDR5",
+          "form_factor": "U-DIMM",
+          "capacity": "32 GB",
+          "modules": "2 x 16 GB",
+          "frequency": 6000,
+          "timings": "30-38-38"
+        }
+      }
+    ],
+    "gpu": [
+      {
+        "model_name": "ASUS DUAL GeForce RTX 5060 OC 8GB",
+        "price": 10990,
+        "fetched_at": "2025-09-23T04:55:16Z",
+        "specifications": {
+          "gpu_chip": "GeForce RTX 5060",
+          "vram_size": "8 GB",
+          "vram_type": "GDDR7",
+          "length": 230,
+          "height": 120,
+          "width_slots": 2,
+          "power_connectors": "1 x 8-pin",
+          "recommended_psu": 550,
+          "tgp": 160,
+          "video_outputs": "1 x HDMI 2.1, 3 x DisplayPort 1.4a"
+        }
+      }
+    ],
+    "storage": [
+      {
+        "model_name": "Samsung 990 PRO 2TB",
+        "price": 5199,
+        "fetched_at": "2025-09-23T04:55:18Z",
+        "specifications": {
+          "type": "SSD",
+          "interface": "PCIe 4.0 x4",
+          "form_factor": "M.2-2280",
+          "capacity": "2 TB",
+          "read_speed": 7450,
+          "write_speed": 6900,
+          "has_heatsink": false
+        }
+      }
+    ],
+    "psu": [
+      {
+        "model_name": "SeaSonic FOCUS GX-750 ATX3.1",
+        "price": 3290,
+        "fetched_at": "2025-09-23T04:55:20Z",
+        "specifications": {
+          "wattage": 750,
+          "standard": "ATX 3.1",
+          "efficiency_rating": "80 PLUS Gold",
+          "native_12vhpwr": true,
+          "pcie_8pin_connectors": 2,
+          "eps_8pin_connectors": 2,
+          "modular_type": "Full Modular",
+          "length": 140
+        }
+      }
+    ],
+    "case": [
+      {
+        "model_name": "Fractal Design North Charcoal Black",
+        "price": 5290,
+        "fetched_at": "2025-09-23T04:55:22Z",
+        "specifications": {
+          "motherboard_support": "ATX, Micro ATX, Mini ITX",
+          "max_cooler_height": 170,
+          "max_gpu_length": 355,
+          "max_gpu_width": 4,
+          "max_psu_length": 255,
+          "fan_support": "Front: 2x140mm or 3x120mm; Top: 2x140mm or 2x120mm; Rear: 1x120mm",
+          "drive_bays": "2 x 3.5\", 2 x 2.5\"",
+          "front_usb_c": true
+        }
+      }
+    ],
+    "cooler": [
+      {
+        "model_name": "Thermalright Peerless Assassin 120",
+        "price": 1350,
+        "fetched_at": "2025-09-23T04:55:24Z",
+        "specifications": {
+          "type": "Air Cooler",
+          "cooling_capacity_tdp": 265,
+          "supported_sockets": "LGA115x, LGA1200, LGA1700, AM4, AM5",
+          "height": 157,
+          "radiator_size": null,
+          "fan_size": "120mm"
+        }
+      }
+    ]
+  }
+}

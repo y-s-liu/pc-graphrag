@@ -1,0 +1,11 @@
+
+# Python
+__pycache__/
+*.pyc
+
+# Neo4j runtime data
+docker/neo4j/data/
+docker/neo4j/logs/
+
+# OS / editor
+.DS_Store
