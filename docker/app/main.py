@@ -1,22 +1,28 @@
 
 import os
-from typing import Optional, List, Dict, Any
+from typing import List, Dict, Any
 from fastapi import FastAPI, HTTPException, Query
-from pydantic import BaseModel
 from neo4j import GraphDatabase, basic_auth
 from openai import OpenAI
 
 NEO4J_URI = os.getenv("NEO4J_URI", "bolt://neo4j:7687")
 NEO4J_USER = os.getenv("NEO4J_USER", "neo4j")
 NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD", "neo4j")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-5-nano")
 
 driver = GraphDatabase.driver(NEO4J_URI, auth=basic_auth(NEO4J_USER, NEO4J_PASSWORD))
-app = FastAPI(title="PC GraphRAG Mini API", version="0.3.0")
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-5")
-oa_client = OpenAI(api_key=OPENAI_API_KEY)
-def llm_explain(system:str, prompt:str)->str:
-    if not OPENAI_API_KEY:
+oa_client = OpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
+
+app = FastAPI(title="PC GraphRAG Mini API", version="0.5.0")
+
+def run_cypher(query: str, params: Dict[str, Any] = None) -> List[Dict[str, Any]]:
+    with driver.session() as session:
+        res = session.run(query, params or {})
+        return [r.data() for r in res]
+
+def llm_explain(system: str, prompt: str) -> str:
+    if not oa_client:
         return "(未設定 OPENAI_API_KEY，略過說明生成)"
     resp = oa_client.chat.completions.create(
         model=OPENAI_MODEL,
@@ -25,12 +31,6 @@ def llm_explain(system:str, prompt:str)->str:
                   {"role":"user","content":prompt}]
     )
     return resp.choices[0].message.content.strip()
-
-
-def run_cypher(query: str, params: Dict[str, Any] = None) -> List[Dict[str, Any]]:
-    with driver.session() as session:
-        res = session.run(query, params or {})
-        return [r.data() for r in res]
 
 @app.get("/health")
 def health():
@@ -43,7 +43,7 @@ def health():
 @app.get("/fit")
 def fit_check(gpu: str = Query(..., description="GPU model_name"),
               case: str = Query(..., description="Case model_name"),
-              explain: bool = Query(False, description="是否同時用 GPT-5 生成中文說明")):
+              explain: bool = Query(False, description="是否用 GPT-5-nano 生成中文說明")):
     q = """
     MATCH (g:GPU {model_name:$gpu}), (c:Case {model_name:$case})
     WITH g, c,
@@ -83,7 +83,7 @@ def list_motherboards(socket: str = Query(..., description="Socket，如 AM5"),
     return run_cypher(q, {"socket": socket, "mem": mem, "k": limit})
 
 @app.get("/psu/check")
-def psu_check(gpu: str = Query(...), cpu: str = Query(...), psu: str = Query(...)):
+def psu_check(gpu: str = Query(...), cpu: str = Query(...), psu: str = Query(...), explain: bool = Query(False)):
     q = """
     MATCH (g:GPU {model_name:$gpu})
     MATCH (c:CPU {model_name:$cpu})
@@ -97,7 +97,12 @@ def psu_check(gpu: str = Query(...), cpu: str = Query(...), psu: str = Query(...
     rows = run_cypher(q, {"gpu": gpu, "cpu": cpu, "psu": psu})
     if not rows:
         raise HTTPException(status_code=404, detail="GPU/CPU/PSU 其中有找不到的型號")
-    return rows[0]
+    row = rows[0]
+    if explain:
+        sys_msg = "你是裝機顧問，請用台灣繁體中文解釋電源瓦數是否足夠，並給建議裕度。"
+        user_msg = f"PSU: {row['psu']}({row['psu_watt']}W)，需求最小瓦數 {row['recommended_min']}W，是否足夠: {row['ok']}。"
+        row["explanation"] = llm_explain(sys_msg, user_msg)
+    return row
 
 @app.get("/build/plan")
 def build_plan(
@@ -107,19 +112,13 @@ def build_plan(
     form_factor: str = Query("Mini-ITX", description="主機板/機殼尺寸（如 Mini-ITX/ATX）"),
     include_gpu: bool = Query(False, description="是否包含獨立顯卡"),
     topn: int = Query(5, ge=1, le=20, description="每類別候選數"),
-    max_results: int = Query(20, ge=1, le=50, description="最多回傳組合數")
+    max_results: int = Query(20, ge=1, le=50, description="最多回傳組合數"),
+    explain: bool = Query(False, description="是否用 GPT-5-nano 產生中文解說與選購建議")
 ):
-    """
-    以「圖上硬條件」過濾候選，從各類別挑最便宜的前 N 名，再做組合與總價篩選。
-    類別：CPU、Motherboard、MemoryKit、Case、PSU、(可選)GPU
-    價格：採各零件「最新的 PriceRecord」；若沒有價格則視為 0（可自行調整策略）
-    """
     cypher = """
-    // 基礎參數
     WITH $socket AS socket, $mem AS mem, $form_factor AS ff, $include_gpu AS wantGpu,
          toInteger($topn) AS N, toInteger($max_results) AS K, toInteger($budget) AS BUD
 
-    // CPU 候選（依最新價格排序取前 N）
     CALL {
       MATCH (cpu:CPU)-[:REQUIRES_SOCKET]->(:Socket {name:socket})
       OPTIONAL MATCH (cpu)-[:HAS_PRICE]->(pr:PriceRecord)
@@ -129,7 +128,6 @@ def build_plan(
       RETURN collect({n:cpu, price:price})[0..N] AS cpus
     }
 
-    // MB 候選（同插槽、支援指定記憶體）
     CALL {
       MATCH (mb:Motherboard)-[:SUPPORTS_SOCKET]->(:Socket {name:socket})
       MATCH (mb)-[:SUPPORTS_MEMORY_TYPE]->(:MemoryStandard {name:mem})
@@ -140,7 +138,6 @@ def build_plan(
       RETURN collect({n:mb, price:price, form:formf})[0..N] AS mbs
     }
 
-    // RAM 候選（指定代別）
     CALL {
       MATCH (ram:MemoryKit)-[:STANDARD]->(:MemoryStandard {name:mem})
       OPTIONAL MATCH (ram)-[:HAS_PRICE]->(pr:PriceRecord)
@@ -149,7 +146,6 @@ def build_plan(
       RETURN collect({n:ram, price:coalesce(lpr.price,0)})[0..N] AS rams
     }
 
-    // Case 候選（支援 form factor）
     CALL {
       MATCH (cse:Case)-[:SUPPORTS_FORM_FACTOR]->(:FormFactor {name:ff})
       OPTIONAL MATCH (cse)-[:HAS_PRICE]->(pr:PriceRecord)
@@ -158,7 +154,6 @@ def build_plan(
       RETURN collect({n:cse, price:coalesce(lpr.price,0)})[0..N] AS cases
     }
 
-    // GPU 候選（如果需要）
     CALL {
       WITH wantGpu AS wg, N AS N
       CALL {
@@ -173,7 +168,6 @@ def build_plan(
       RETURN CASE WHEN wg THEN arr ELSE [ {n:null, price:0} ] END AS gpus
     }
 
-    // PSU 候選（先抓若干顆，稍後再用需求瓦數過濾）
     CALL {
       MATCH (p:PSU)
       OPTIONAL MATCH (p)-[:HAS_PRICE]->(pr:PriceRecord)
@@ -182,7 +176,6 @@ def build_plan(
       RETURN collect({n:p, price:coalesce(lpr.price,0)})[0..N] AS psus
     }
 
-    // 組合並套用硬條件
     WITH cpus, mbs, rams, cases, gpus, psus, BUD
     UNWIND cpus AS C
     UNWIND mbs AS M
@@ -191,7 +184,6 @@ def build_plan(
       AND (M.form = $form_factor OR M.n.form_factor = $form_factor OR $form_factor IS NULL)
     UNWIND rams AS R
     WITH C, M, R, cases, gpus, psus, BUD
-    // RAM 代別需符合
     WHERE R.n.type = $mem OR R.n.type IS NULL
 
     UNWIND cases AS S
@@ -205,7 +197,6 @@ def build_plan(
          )) AS gpuFits
     WHERE gpuFits
 
-    // 計算需求瓦數（若無 GPU 則以 CPU TDP + 150 預估）
     WITH C, M, R, S, G, psus, BUD,
          CASE
            WHEN G.n IS NULL THEN coalesce(C.n.tdp_num, C.n.tdp, 65) + 150
@@ -248,9 +239,15 @@ def build_plan(
     })
     if not rows:
         raise HTTPException(status_code=404, detail="沒有找到符合預算與條件的組合；可放寬條件或提高 topn/budget")
-    return {"params": {
+    payload = {"params": {
                 "budget": budget, "socket": socket, "mem": mem,
                 "form_factor": form_factor, "include_gpu": include_gpu,
                 "topn": topn, "max_results": max_results
             },
             "results": rows}
+    if explain:
+        sys_msg = "你是專業裝機顧問，使用台灣繁體中文。根據提供的多組零件與總價，挑出 1~2 組最合理的搭配並說明取捨，附上相容性與功耗依據。"
+        preview = rows[:3]
+        user_msg = "候選：\n" + "\n".join([str(r) for r in preview]) + f"\n條件：預算 {budget}，平台 {socket}/{mem}/{form_factor}，含獨顯: {include_gpu}。"
+        payload["explanation"] = llm_explain(sys_msg, user_msg)
+    return payload

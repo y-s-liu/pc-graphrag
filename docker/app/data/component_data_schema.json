@@ -1,0 +1,274 @@
+{
+  "components": {
+    "cpu": [
+      {
+        "model_name": "AMD Ryzen 5 7600",
+        "socket": "AM5",
+        "tdp": 65,
+        "cores": 6,
+        "threads": 12,
+        "base_clock_ghz": 3.8,
+        "boost_clock_ghz": 5.1,
+        "integrated_graphics": "Radeon Graphics",
+        "prices": [
+          {
+            "price": 6790,
+            "fetched_at": "2025-09-20",
+            "source": "coolpc"
+          }
+        ]
+      },
+      {
+        "model_name": "Intel Core i5-13400F",
+        "socket": "LGA1700",
+        "tdp": 65,
+        "cores": 10,
+        "threads": 16,
+        "base_clock_ghz": 2.5,
+        "boost_clock_ghz": 4.6,
+        "integrated_graphics": null,
+        "prices": [
+          {
+            "price": 5790,
+            "fetched_at": "2025-09-20",
+            "source": "coolpc"
+          }
+        ]
+      }
+    ],
+    "motherboard": [
+      {
+        "model_name": "ASUS TUF GAMING B650-PLUS WIFI",
+        "socket": "AM5",
+        "chipset": "B650",
+        "form_factor": "ATX",
+        "memory_type": "DDR5",
+        "memory_slots": 4,
+        "memory_max": 128,
+        "wifi": "WiFi 6",
+        "prices": [
+          {
+            "price": 5390,
+            "fetched_at": "2025-09-20",
+            "source": "coolpc"
+          }
+        ]
+      },
+      {
+        "model_name": "GIGABYTE B650I AORUS ULTRA",
+        "socket": "AM5",
+        "chipset": "B650",
+        "form_factor": "Mini-ITX",
+        "memory_type": "DDR5",
+        "memory_slots": 2,
+        "memory_max": 96,
+        "wifi": "WiFi 6E",
+        "prices": [
+          {
+            "price": 6990,
+            "fetched_at": "2025-09-20",
+            "source": "coolpc"
+          }
+        ]
+      },
+      {
+        "model_name": "MSI PRO B760M-A WIFI",
+        "socket": "LGA1700",
+        "chipset": "B760",
+        "form_factor": "Micro-ATX",
+        "memory_type": "DDR5",
+        "memory_slots": 4,
+        "memory_max": 128,
+        "wifi": "WiFi 6",
+        "prices": [
+          {
+            "price": 4490,
+            "fetched_at": "2025-09-20",
+            "source": "coolpc"
+          }
+        ]
+      }
+    ],
+    "ram": [
+      {
+        "model_name": "G.Skill Ripjaws S5 32GB (2x16GB) DDR5-6000",
+        "type": "DDR5",
+        "capacity_gb": 32,
+        "sticks": 2,
+        "speed_mhz": 6000,
+        "cas_latency": 30,
+        "prices": [
+          {
+            "price": 2690,
+            "fetched_at": "2025-09-20",
+            "source": "coolpc"
+          }
+        ]
+      },
+      {
+        "model_name": "Kingston Fury Beast 32GB (2x16GB) DDR4-3200",
+        "type": "DDR4",
+        "capacity_gb": 32,
+        "sticks": 2,
+        "speed_mhz": 3200,
+        "cas_latency": 16,
+        "prices": [
+          {
+            "price": 1990,
+            "fetched_at": "2025-09-20",
+            "source": "coolpc"
+          }
+        ]
+      }
+    ],
+    "gpu": [
+      {
+        "model_name": "MSI GeForce RTX 4070 SUPER VENTUS 2X",
+        "tgp": 220,
+        "length_num": 242,
+        "length": 242,
+        "width_slots": 2.0,
+        "recommended_psu": 650,
+        "prices": [
+          {
+            "price": 17990,
+            "fetched_at": "2025-09-20",
+            "source": "coolpc"
+          }
+        ]
+      },
+      {
+        "model_name": "ASUS Dual GeForce RTX 4060",
+        "tgp": 115,
+        "length_num": 227,
+        "length": 227,
+        "width_slots": 2.0,
+        "recommended_psu": 550,
+        "prices": [
+          {
+            "price": 9990,
+            "fetched_at": "2025-09-20",
+            "source": "coolpc"
+          }
+        ]
+      }
+    ],
+    "storage": [
+      {
+        "model_name": "Samsung 980 PRO 1TB",
+        "type": "NVMe",
+        "interface": "PCIe 4.0 x4",
+        "form_factor": "M.2 2280",
+        "seq_read_mb_s": 7000,
+        "seq_write_mb_s": 5000,
+        "prices": [
+          {
+            "price": 2590,
+            "fetched_at": "2025-09-20",
+            "source": "coolpc"
+          }
+        ]
+      },
+      {
+        "model_name": "WD Blue SN570 1TB",
+        "type": "NVMe",
+        "interface": "PCIe 3.0 x4",
+        "form_factor": "M.2 2280",
+        "seq_read_mb_s": 3500,
+        "seq_write_mb_s": 3000,
+        "prices": [
+          {
+            "price": 1790,
+            "fetched_at": "2025-09-20",
+            "source": "coolpc"
+          }
+        ]
+      }
+    ],
+    "psu": [
+      {
+        "model_name": "Seasonic Focus GX-750",
+        "wattage": 750,
+        "modular": "Full",
+        "efficiency": "80+ Gold",
+        "prices": [
+          {
+            "price": 3490,
+            "fetched_at": "2025-09-20",
+            "source": "coolpc"
+          }
+        ]
+      },
+      {
+        "model_name": "Cooler Master MWE Gold 650 V2",
+        "wattage": 650,
+        "modular": "Full",
+        "efficiency": "80+ Gold",
+        "prices": [
+          {
+            "price": 2590,
+            "fetched_at": "2025-09-20",
+            "source": "coolpc"
+          }
+        ]
+      }
+    ],
+    "case": [
+      {
+        "model_name": "Fractal Design North",
+        "motherboard_support": "Mini-ITX Micro-ATX ATX",
+        "max_gpu_length": 355,
+        "max_gpu_width": 2.7,
+        "type": "Mid Tower",
+        "prices": [
+          {
+            "price": 3990,
+            "fetched_at": "2025-09-20",
+            "source": "coolpc"
+          }
+        ]
+      },
+      {
+        "model_name": "NZXT H1 V2",
+        "motherboard_support": "Mini-ITX",
+        "max_gpu_length": 324,
+        "max_gpu_width": 2.4,
+        "type": "Mini Tower",
+        "prices": [
+          {
+            "price": 7490,
+            "fetched_at": "2025-09-20",
+            "source": "coolpc"
+          }
+        ]
+      }
+    ],
+    "cooler": [
+      {
+        "model_name": "Thermalright Peerless Assassin 120 SE",
+        "type": "Air",
+        "tdp_rating": 210,
+        "height_mm": 155,
+        "prices": [
+          {
+            "price": 990,
+            "fetched_at": "2025-09-20",
+            "source": "coolpc"
+          }
+        ]
+      },
+      {
+        "model_name": "NZXT Kraken 240",
+        "type": "AIO Liquid",
+        "radiator_size_mm": 240,
+        "prices": [
+          {
+            "price": 3990,
+            "fetched_at": "2025-09-20",
+            "source": "coolpc"
+          }
+        ]
+      }
+    ]
+  }
+}
